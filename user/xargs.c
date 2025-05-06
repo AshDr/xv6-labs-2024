@@ -9,7 +9,7 @@ void run(char *prog, char *args[]) {
     exit(1);
   }
 }
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) { // xargs grep hello a.c
   if (argc < 2) {
     fprintf(2, "xargs: usage: xargs [command]\n");
     exit(1);
@@ -20,19 +20,17 @@ int main(int argc, char *argv[]) {
   for(int i=1; i<argc; i++) {
     args[i-1]=argv[i];
   }
-  int i = argc;
+  int i = argc-1;
   int n;
   while ((n=read(0, p, 1)) > 0) {
-    printf("test? %c\n",*p);
     if(*p ==' '||*p=='\n') {
-      fprintf(1,"test??\n");
       int f=0;
       if(*p=='\n') {
-        fprintf(1,"test2\n");
         f=1;
       }
       *p='\0';
       args[i++] = q;
+      // fprintf(1, "my args:%s\n", args[i-1]);
       q = p + 1;
       if (i >= MAXARG) {
         fprintf(2, "xargs: too many arguments\n");
@@ -40,24 +38,23 @@ int main(int argc, char *argv[]) {
       }
       if(f) {
         args[i]=0;
-        for(int j=0; j<i; j++) {
-          fprintf(2, "call args: %s\n", args[j]);
-        }
-        i=argc;
+        // for(int j=0; j<i; j++) {
+        //   fprintf(1, "call args: %s\n", args[j]);
+        // }
+        i=argc-1;
         p=q=buf;
         run(argv[1], args);
       }else ++p;
     }
     else ++p;
   }
-  if(i!=argc) {
+  if(i!=argc-1) {
     args[i]=0;
-    for(int j=0; j<i; j++) {
-      fprintf(2, "call args: %s\n", args[j]);
-    }
+    // for(int j=0; j<i; j++) {
+    //   fprintf(2, "call args: %s\n", args[j]);
+    // }
     run(argv[1], args);
   }
-  printf("n:%d\n",n);
   while(wait(0)!=-1) ;
   exit(0);
 }
